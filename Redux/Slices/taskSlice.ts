@@ -4,6 +4,13 @@ import type { RootState } from '../store'
 export interface ITask {
     id: string,
     name: string,
+    deadline: number,
+    isCompleted: boolean
+}
+
+interface ITaskUpdates {
+    id: string,
+    updates: Partial<ITask>
 }
 
 // Define the initial state using that type
@@ -19,10 +26,24 @@ export const taskSlice = createSlice({
             state.push(task.payload)
         }
     },
+
     removeTask: (state, taskID: PayloadAction<string>) => {
         if (taskID.payload) {
             //broken atm
             state = state.filter((task: ITask) => task.id !== taskID.payload)
+        }
+    },
+
+    editTask: (state, taskUpdates: PayloadAction<ITaskUpdates>) => {
+        if (taskUpdates.payload.id && taskUpdates.payload.updates) {
+
+            let retrievedTaskIndex = state.findIndex((task: ITask) => {
+                task.id === taskUpdates.payload.id
+            })
+
+            if (retrievedTaskIndex) {
+                state[retrievedTaskIndex] = {...state[retrievedTaskIndex], ...taskUpdates.payload.updates}
+            }
         }
     }
   },
