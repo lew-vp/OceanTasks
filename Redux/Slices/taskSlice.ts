@@ -1,5 +1,12 @@
+
+// REDUX
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store'
+
+// EXTERNAL LIBRARIES
+import 'react-native-get-random-values';
+import { v4 as uuidV4 } from 'uuid'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export interface ITask {
     id: string,
@@ -16,15 +23,54 @@ interface ITaskUpdates {
 // Define the initial state using that type
 const initialState: ITask[] = []
 
+export const makeBlankTask = () => {
+    return ({
+        id: uuidV4(),
+        name: 'New Task',
+        isCompleted: false,
+        deadline: 0
+    })
+}
+
+const setAsyncTasks = async (tasks: ITask[]) => {
+    try {
+        if (tasks) {
+            console.log('setting async tasks')
+            console.log(tasks)
+            console.log('-------------')
+            await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
+        } else {
+            console.log('no tasks')
+        }
+    } catch (e) {
+      // saving error
+    }
+  };
+
 export const taskSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
+
+    setTasks: (state, tasks: PayloadAction<ITask[]>) => {
+        if (tasks){
+            setAsyncTasks([...tasks.payload])
+            return [...tasks.payload]
+        } 
+    },
+
     // Take an ITask and add it to State
     addTask: (state, task: PayloadAction<ITask>) => {
         if (task) {
             state.push(task.payload)
         }
+    },
+
+    // Take an ITask and add it to State
+    addBlankTask: (state) => {
+
+        state.push(makeBlankTask())
+        
     },
 
     removeTask: (state, taskID: PayloadAction<string>) => {
@@ -38,21 +84,32 @@ export const taskSlice = createSlice({
     },
 
     editTask: (state, taskUpdates: PayloadAction<ITaskUpdates>) => {
+        console.log('helooo')
         if (taskUpdates.payload.id && taskUpdates.payload.updates) {
 
-            let retrievedTaskIndex = state.findIndex((task: ITask) => {
-                task.id === taskUpdates.payload.id
+            let tmpState = [...state]
+
+            console.log(tmpState)
+            console.log(taskUpdates.payload.id)
+            console.log(typeof taskUpdates.payload.id)
+
+            let retrievedTaskIndex = tmpState.findIndex((task: ITask) => {
+                task.id == taskUpdates.payload.id
             })
 
+            console.log(retrievedTaskIndex)
+
             if (retrievedTaskIndex) {
-                state[retrievedTaskIndex] = {...state[retrievedTaskIndex], ...taskUpdates.payload.updates}
+                tmpState[retrievedTaskIndex] = {...tmpState[retrievedTaskIndex], ...taskUpdates.payload.updates}
             }
+
+            return tmpState
         }
     }
   },
 })
 
-export const { addTask, removeTask } = taskSlice.actions
+export const { setTasks, addTask, removeTask, editTask, addBlankTask } = taskSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectTasks = (state: RootState) => state
