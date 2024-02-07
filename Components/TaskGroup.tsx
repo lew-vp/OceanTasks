@@ -20,7 +20,7 @@ interface ITaskGroup {
 const TaskGroup = ({title, tasks}: ITaskGroup) => {
     return (
         <View style={styles.groupWrapper}>
-            <Text>{title}</Text>
+            <Text style={styles.titleText}>{title}</Text>
             <View style={styles.list}>
                 {tasks.map((task: ITask) => (
                     <TaskCard
@@ -38,10 +38,14 @@ const styles = StyleSheet.create({
     groupWrapper: {
         alignSelf: 'stretch',
         borderRadius: 10,
-        backgroundColor: 'grey'
+        backgroundColor: '#eeeeee'
     },
     list: {
-
+        gap: 10
+    },
+    titleText: {
+        padding: 5,
+        marginBottom: 15
     }
 })
 

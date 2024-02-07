@@ -54,7 +54,9 @@ const Tasks = () => {
 
 	return (
 		<SafeAreaView>
-			<ScrollView style={{alignSelf: 'stretch'}}>
+			<ScrollView 
+				contentContainerStyle={{ alignSelf: 'stretch', gap: 10}}
+			>
 				<TaskGroup 
 					title='Completed' 
 					tasks={[...tasks].filter((task: ITask) => task.isCompleted)} /

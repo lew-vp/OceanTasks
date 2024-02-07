@@ -29,8 +29,11 @@ export const taskSlice = createSlice({
 
     removeTask: (state, taskID: PayloadAction<string>) => {
         if (taskID.payload) {
+            console.log('passedTaskID: ' + taskID.payload)
+            console.log(state)
+            console.log('-----------------')
             //broken atm
-            state = state.filter((task: ITask) => task.id !== taskID.payload)
+            return state.filter((task: ITask) => task.id !== taskID.payload)
         }
     },
 
