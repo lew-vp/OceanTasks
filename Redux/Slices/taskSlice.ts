@@ -84,7 +84,6 @@ export const taskSlice = createSlice({
     },
 
     editTask: (state, taskUpdates: PayloadAction<ITaskUpdates>) => {
-        console.log('helooo')
         if (taskUpdates.payload.id && taskUpdates.payload.updates) {
 
             let tmpState = [...state]

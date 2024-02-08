@@ -57,7 +57,7 @@ const Tasks = (props: any) => {
 
 				{[...tasks].some((task: ITask) => !task.isCompleted) && 
 					<TaskGroup 
-						title='Incomplete' 
+						title='Tasks' 
 						tasks={[...tasks].filter((task: ITask) => !task.isCompleted)} 
 					/>
 				}
