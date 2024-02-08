@@ -6,7 +6,10 @@ import untypedOceanTheme from '../../themes/ocean.json'
 const oceanTheme: ITheme = require('../../themes/ocean.json')
 
 export interface ITheme {
-    primaryColor: string
+    primaryColor: string,
+    primarySelected: string,
+    primaryBorder: string,
+    primarySelectedBorder: string
 }
 
 

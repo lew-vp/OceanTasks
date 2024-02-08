@@ -1,3 +1,6 @@
 {
-    "primaryColor": "#38A2AD"
+    "primaryColor": "rgba(33, 77, 101, 0.8)",
+    "primaryBorder": "rgba(129, 129, 129, 0.25)",
+    "primarySelected": "rgba(127, 189, 196, 0.7)",
+    "primarySelectedBorder": "rgba(127, 189, 196, 0.2)"
 }

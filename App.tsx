@@ -1,9 +1,10 @@
 // REACT NATIVE
-import { StyleSheet, Text, View, Dimensions, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, SafeAreaView, ImageBackground } from 'react-native';
 
 // REDUX
 import store from './Redux/store'
 import { Provider, useDispatch } from 'react-redux';
+import { ITask, setTasks } from './Redux/Slices/taskSlice';
 
 // EXTERNAL LIBRARIES
 import { StatusBar } from 'expo-status-bar';
@@ -11,7 +12,9 @@ import { StatusBar } from 'expo-status-bar';
 // COMPONENTS
 import Tasks from './Pages/Tasks';
 import { useEffect } from 'react';
-import { ITask, setTasks } from './Redux/Slices/taskSlice';
+import Layout from './Layout';
+
+
 
 
 // EXTERNAL COMPONENTS
@@ -27,36 +30,13 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function App() {
 
-	/* const dispatch = useDispatch() */
-
-	/* useEffect(() => {
-		console.log('trying to get stored tasks')
-		getAsyncTasks().then((storedTasks: ITask[]) => {
-			if (storedTasks && storedTasks.length) {
-				console.log('got stored tasks')
-				console.log(storedTasks)
-				dispatch(setTasks(storedTasks))
-			}
-		})
-	}, []) */
 
 	return (
 		<GestureHandlerRootView style={{flex: 1}}>
 			<Provider store={store}>
-				<View style={styles.container}>
-					<Tasks />
-				</View>
+				<Layout />
 			</Provider>
 		</GestureHandlerRootView>
 	)
 }
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 10,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-})

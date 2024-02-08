@@ -14,29 +14,37 @@ interface ITaskCard {
 }
 
 
-const TaskCard = ({taskDetails, onDelete, index}: ITaskCard) => {
+const TaskCard = ({taskDetails, onDelete}: ITaskCard) => {
 
 	const dispatch = useDispatch()
 
 	const selectedTask = useSelector((state: RootState) => state.selectedTask.value)
 	const theme = useSelector((state: RootState) => state.theme)
 
+	const toggleTaskCompletion = () => {
+        if (selectedTask !== null && taskDetails) {
+            dispatch(editTask({id: taskDetails.id, updates: {isCompleted: !taskDetails.isCompleted}}))
+        }
+    }
+
 	return (
 		<TouchableOpacity 
-			style={{ ...styles.taskCard, backgroundColor: selectedTask === index ?  'grey' : theme.primaryColor }}
-			onPress={() => dispatch(setSelectedTask(index))}
+			style={{ 
+				...styles.taskCard, 
+				backgroundColor: selectedTask === taskDetails.id ?  theme.primarySelected : theme.primaryColor,
+			}}
+			onPress={() => dispatch(setSelectedTask(taskDetails.id))}
 		>
 			<View style={styles.grouper}>
 				<Checkbox 
 					value={taskDetails.isCompleted} 
-					onValueChange={(val: boolean) => {
-						dispatch(editTask({id: taskDetails.id, updates: {isCompleted: true}}))
-					}}
+					onValueChange={() => {}}
+					color={taskDetails.isCompleted ? theme.primaryColor : '#b3b3b3'}
 				/>
 				<Text style={styles.text}>{taskDetails.name}</Text>
 			</View>
 			
-			<X onPress={() => onDelete} color={'grey'}/>
+			<X onPress={() => onDelete}  fontSize='5' color={'#dedede'}/>
 		</TouchableOpacity>
 	)
 }
@@ -51,7 +59,16 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 
-		borderRadius: 10
+		borderRadius: 10,
+		borderWidth: 1,
+		borderColor: 'rgba(129, 129, 129, 0.25)',
+
+		shadowOpacity: 0.15,
+		shadowOffset: {width: 0.5, height: 0.5},
+		shadowColor: '#424242',
+		elevation: 5
+
+
 	},
 	grouper: {
 		flexDirection: 'row',

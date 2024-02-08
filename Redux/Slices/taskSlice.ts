@@ -13,7 +13,8 @@ export interface ITask {
     id: string,
     name: string,
     deadline: number,
-    isCompleted: boolean
+    isCompleted: boolean,
+    description: string
 }
 
 interface ITaskUpdates {
@@ -25,21 +26,6 @@ interface ITaskUpdates {
 const initialState: ITask[] = []
 
 
-
-const setAsyncTasks = async (tasks: ITask[]) => {
-    try {
-        if (tasks) {
-            console.log('setting async tasks')
-            console.log(tasks)
-            console.log('-------------')
-            await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
-        } else {
-            console.log('no tasks')
-        }
-    } catch (e) {
-      // saving error
-    }
-  };
 
 export const taskSlice = createSlice({
   name: 'tasks',
@@ -71,23 +57,10 @@ export const taskSlice = createSlice({
     editTask: (state, taskUpdates: PayloadAction<ITaskUpdates>) => {
         if (taskUpdates.payload.id && taskUpdates.payload.updates) {
 
-            let tmpState = [...state]
-
-            console.log(tmpState)
-            console.log(taskUpdates.payload.id)
-            console.log(typeof taskUpdates.payload.id)
-
-            let retrievedTaskIndex = tmpState.findIndex((task: ITask) => {
-                task.id == taskUpdates.payload.id
-            })
-
-            console.log(retrievedTaskIndex)
-
-            if (retrievedTaskIndex) {
-                tmpState[retrievedTaskIndex] = {...tmpState[retrievedTaskIndex], ...taskUpdates.payload.updates}
+            let foundTask = state.findIndex((task: ITask) => task.id === taskUpdates.payload.id)
+            if (foundTask !== null) {
+                state[foundTask] = {...state[foundTask], ...taskUpdates.payload.updates}
             }
-
-            return tmpState
         }
     }
   },

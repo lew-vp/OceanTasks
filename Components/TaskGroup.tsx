@@ -37,7 +37,7 @@ const TaskGroup = ({title, tasks}: ITaskGroup) => {
                 onPress={toggleDrawer}
                 activeOpacity={0.6}
             >
-                <Text style={styles.titleText}>{title}</Text>
+                <Text style={{...styles.titleText, color: theme.primaryColor}}>{title}</Text>
                 {trayOpen ? <ChevronRight color={theme.primaryColor} /> : <ChevronDown color={theme.primaryColor} />}
             </TouchableOpacity>
             

@@ -44,7 +44,7 @@ const Tasks = (props: any) => {
 
 				{[...tasks].some((task: ITask) => !task.isCompleted) && 
 					<TaskGroup 
-						title='Tasks' 
+						title='To Do' 
 						tasks={incompleteTasks} 
 					/>
 				}
@@ -55,7 +55,7 @@ const Tasks = (props: any) => {
 				style={{...styles.addPrompt, borderColor: theme.primaryColor}}
 				onPress={() => dispatch(addBlankTask())}
 			>
-				<Plus/>
+				<Plus color={theme.primaryColor}/>
 			</TouchableOpacity>
 
 			<EditPanel/>
