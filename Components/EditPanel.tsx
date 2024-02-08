@@ -40,7 +40,6 @@ const EditPanel = () => {
                         <TextInput
                             style={styles.title}
                             value={tasks[selectedTask].name}
-                            
                         />
                     </View>
                 </View>
