@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 
 // REDUX
 import { useDispatch, useSelector } from 'react-redux'
-import { ITask, addBlankTask, addTask, removeTask, setTasks } from '../Redux/Slices/taskSlice'
+import { ITask, addBlankTask, removeTask, setTasks } from '../Redux/Slices/taskSlice'
 
 // COMPONENTS
 import TaskCard from '../Components/TaskCard'
@@ -16,32 +16,19 @@ import dayjs from 'dayjs'
 import TaskGroup from '../Components/TaskGroup'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Plus } from 'react-native-feather'
+import EditPanel from '../Components/EditPanel'
+import { RootState } from '../Redux/store'
 
 const Tasks = (props: any) => {
 
-	const tasks = useSelector((state: any) => state.tasks)
-	const theme = useSelector((state: any) => state.theme)
+	const tasks = useSelector((state: RootState) => state.tasks)
+	const theme = useSelector((state: RootState) => state.theme)
+	const selectedTask = useSelector((state: RootState) => state.selectedTask.value)
+
 	const dispatch = useDispatch()
 
-	const getAsyncTasks = async () => {
-		try {
-		  const jsonValue = await AsyncStorage.getItem('tasks');
-		  return jsonValue != null ? JSON.parse(jsonValue) : null;
-		} catch (e) {
-		  // error reading value
-		  return null
-		}
-	  };
-
-
-	useEffect(() => {
-		getAsyncTasks().then((asyncTasks: ITask[]) => {
-			if (asyncTasks) dispatch(setTasks(asyncTasks))
-		})
-	}, [])
-
-	const [showCompleted, setShowCompleted] = useState<boolean>(true)
-	const [showIncomplete, setShowIncomplete] = useState<boolean>(true)
+	const completedTasks = tasks.filter((task: ITask) => task.isCompleted)
+	const incompleteTasks = tasks.filter((task: ITask) => !task.isCompleted)
 
 	return (
 		<SafeAreaView style={styles.layout}>
@@ -51,14 +38,14 @@ const Tasks = (props: any) => {
 				{[...tasks].some((task: ITask) => task.isCompleted) && 
 					<TaskGroup 
 						title='Completed' 
-						tasks={[...tasks].filter((task: ITask) => task.isCompleted)}
+						tasks={completedTasks}
 					/>
 				}
 
 				{[...tasks].some((task: ITask) => !task.isCompleted) && 
 					<TaskGroup 
 						title='Tasks' 
-						tasks={[...tasks].filter((task: ITask) => !task.isCompleted)} 
+						tasks={incompleteTasks} 
 					/>
 				}
 
@@ -70,6 +57,9 @@ const Tasks = (props: any) => {
 			>
 				<Plus/>
 			</TouchableOpacity>
+
+			<EditPanel/>
+
 		</SafeAreaView>
 	)
 }

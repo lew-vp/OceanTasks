@@ -7,6 +7,7 @@ import type { RootState } from '../store'
 import 'react-native-get-random-values';
 import { v4 as uuidV4 } from 'uuid'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { makeBlankTask } from '../../util/taskFunctions';
 
 export interface ITask {
     id: string,
@@ -23,14 +24,7 @@ interface ITaskUpdates {
 // Define the initial state using that type
 const initialState: ITask[] = []
 
-export const makeBlankTask = () => {
-    return ({
-        id: uuidV4(),
-        name: 'New Task',
-        isCompleted: false,
-        deadline: 0
-    })
-}
+
 
 const setAsyncTasks = async (tasks: ITask[]) => {
     try {
@@ -54,23 +48,14 @@ export const taskSlice = createSlice({
 
     setTasks: (state, tasks: PayloadAction<ITask[]>) => {
         if (tasks){
-            setAsyncTasks([...tasks.payload])
+            // setAsyncTasks([...tasks.payload])
             return [...tasks.payload]
         } 
     },
 
     // Take an ITask and add it to State
-    addTask: (state, task: PayloadAction<ITask>) => {
-        if (task) {
-            state.push(task.payload)
-        }
-    },
-
-    // Take an ITask and add it to State
     addBlankTask: (state) => {
-
         state.push(makeBlankTask())
-        
     },
 
     removeTask: (state, taskID: PayloadAction<string>) => {
@@ -108,9 +93,10 @@ export const taskSlice = createSlice({
   },
 })
 
-export const { setTasks, addTask, removeTask, editTask, addBlankTask } = taskSlice.actions
+export const { setTasks, removeTask, editTask, addBlankTask } = taskSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectTasks = (state: RootState) => state
+export const selectTaskByID = (state: RootState, id: string) => state.tasks.find((task: ITask) => task.id === id)
 
 export default taskSlice.reducer

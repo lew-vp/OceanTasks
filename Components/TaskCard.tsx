@@ -1,24 +1,31 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { ITask, editTask } from '../Redux/Slices/taskSlice'
 import { X } from 'react-native-feather'
 import Checkbox from 'expo-checkbox';
 import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../Redux/store';
+import { setSelectedTask } from '../Redux/Slices/selectedTaskSlice';
 
 interface ITaskCard {
 	taskDetails: ITask,
+	index: number,
 	onDelete: (taskID: string) => void;
 }
 
 
-const TaskCard = ({taskDetails, onDelete}: ITaskCard) => {
+const TaskCard = ({taskDetails, onDelete, index}: ITaskCard) => {
 
 	const dispatch = useDispatch()
-	
-	const theme = useSelector((state: any) => state.theme)
+
+	const selectedTask = useSelector((state: RootState) => state.selectedTask.value)
+	const theme = useSelector((state: RootState) => state.theme)
 
 	return (
-		<View style={{...styles.taskCard, backgroundColor: theme.primaryColor}}>
+		<TouchableOpacity 
+			style={{ ...styles.taskCard, backgroundColor: selectedTask === index ?  'grey' : theme.primaryColor }}
+			onPress={() => dispatch(setSelectedTask(index))}
+		>
 			<View style={styles.grouper}>
 				<Checkbox 
 					value={taskDetails.isCompleted} 
@@ -30,7 +37,7 @@ const TaskCard = ({taskDetails, onDelete}: ITaskCard) => {
 			</View>
 			
 			<X onPress={() => onDelete} color={'grey'}/>
-		</View>
+		</TouchableOpacity>
 	)
 }
 

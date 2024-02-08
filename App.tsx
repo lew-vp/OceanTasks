@@ -17,12 +17,27 @@ import { ITask, setTasks } from './Redux/Slices/taskSlice';
 // EXTERNAL COMPONENTS
 import { v4 as uuidV4 } from 'uuid'
 import dayjs from 'dayjs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAsyncTasks } from './util/storageFunctions';
 
 
 //Notifee Stuff Here
 
 
 export default function App() {
+
+	/* const dispatch = useDispatch() */
+
+	/* useEffect(() => {
+		console.log('trying to get stored tasks')
+		getAsyncTasks().then((storedTasks: ITask[]) => {
+			if (storedTasks && storedTasks.length) {
+				console.log('got stored tasks')
+				console.log(storedTasks)
+				dispatch(setTasks(storedTasks))
+			}
+		})
+	}, []) */
 
 	return (
 		<Provider store={store}>

@@ -31,9 +31,10 @@ const TaskGroup = ({title, tasks}: ITaskGroup) => {
             
             <View style={{...styles.list}}>
 
-                {trayOpen && tasks.map((task: ITask) => (
+                {trayOpen && tasks.map((task: ITask, index: number) => (
                     <TaskCard
                         key={task.id}
+                        index={index}
                         taskDetails={task}
                         onDelete={() => { }}
                     />
