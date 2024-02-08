@@ -1,5 +1,5 @@
 // REACT NATIVE
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, SafeAreaView } from 'react-native';
 
 // REDUX
 import store from './Redux/store'
@@ -19,6 +19,7 @@ import { v4 as uuidV4 } from 'uuid'
 import dayjs from 'dayjs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAsyncTasks } from './util/storageFunctions';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 //Notifee Stuff Here
@@ -40,11 +41,13 @@ export default function App() {
 	}, []) */
 
 	return (
-		<Provider store={store}>
-			<View style={styles.container}>
-				<Tasks/>
-			</View>
-		</Provider>
+		<GestureHandlerRootView style={{flex: 1}}>
+			<Provider store={store}>
+				<View style={styles.container}>
+					<Tasks />
+				</View>
+			</Provider>
+		</GestureHandlerRootView>
 	)
 }
 

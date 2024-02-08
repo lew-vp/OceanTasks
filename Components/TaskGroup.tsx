@@ -1,5 +1,5 @@
 // REACT NATIVE
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, LayoutAnimation } from 'react-native'
 import React, { PropsWithChildren, useState } from 'react'
 import { Dimensions } from 'react-native'
 
@@ -10,6 +10,8 @@ import { ITask } from '../Redux/Slices/taskSlice'
 import { ChevronDown, ChevronRight, X } from 'react-native-feather'
 import TaskCard from './TaskCard'
 import { current } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+import { RootState } from '../Redux/store'
 
 
 interface ITaskGroup {
@@ -21,16 +23,25 @@ interface ITaskGroup {
 const TaskGroup = ({title, tasks}: ITaskGroup) => {
 
     const [trayOpen, setTrayOpen] = useState<Boolean>(true)
+    const theme = useSelector((state: RootState) => state.theme)
+
+    const toggleDrawer = () => {
+        setTrayOpen(current => !current)
+        LayoutAnimation.configureNext({...LayoutAnimation.Presets.easeInEaseOut, duration: 200})
+    }
 
     return (
         <View style={styles.groupWrapper}>
-            <TouchableOpacity style={styles.groupHeader} onPress={() => setTrayOpen(!trayOpen)}>
+            <TouchableOpacity 
+                style={styles.groupHeader} 
+                onPress={toggleDrawer}
+                activeOpacity={0.6}
+            >
                 <Text style={styles.titleText}>{title}</Text>
-                {trayOpen ? <ChevronRight /> : <ChevronDown />}
+                {trayOpen ? <ChevronRight color={theme.primaryColor} /> : <ChevronDown color={theme.primaryColor} />}
             </TouchableOpacity>
             
             <View style={{...styles.list}}>
-
                 {trayOpen && tasks.map((task: ITask, index: number) => (
                     <TaskCard
                         key={task.id}
@@ -51,7 +62,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     list: {
-        gap: 8
+        gap: 8,
+        overflow: 'hidden'
     },
     titleText: {
         fontSize: 18,
@@ -62,6 +74,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 10
+    },
+    hidden: {
+        height: 0
     }
 })
 
