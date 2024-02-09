@@ -6,7 +6,8 @@ export const makeBlankTask = () => {
         id: uuidV4(),
         name: 'New Task',
         isCompleted: false,
-        deadline: 0,
-        description: ''
+        reminderTime: 0,
+        description: '',
+        reminded: false
     })
 }

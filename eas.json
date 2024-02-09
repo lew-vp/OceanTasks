@@ -5,7 +5,19 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "android": {
+        "image": "ubuntu-18.04-jdk-11-ndk-r19c"
+      }
+    },
+    "development-simulator": {
+      "extends": "development",
+      "ios": {
+        "simulator": true
+      }
     },
     "preview": {
       "distribution": "internal"

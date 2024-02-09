@@ -12,9 +12,10 @@ import { makeBlankTask } from '../../util/taskFunctions';
 export interface ITask {
     id: string,
     name: string,
-    deadline: number,
+    reminderTime: number | null,
     isCompleted: boolean,
-    description: string
+    description: string,
+    reminded: boolean
 }
 
 interface ITaskUpdates {
