@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ImageBackground } from 'react-native'
-import React, { useEffect, useMemo } from 'react'
+import React, { createContext, useEffect, useMemo, useRef } from 'react'
 import Tasks from './Pages/Tasks'
 import { getAsyncTasks, setAsyncTasks } from './util/storageFunctions'
 import { ITask, setTasks } from './Redux/Slices/taskSlice'
@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './Redux/store'
 import notifee from '@notifee/react-native'
 import dayjs from 'dayjs'
+import { UtilContext } from './contexts/UtilContext'
 
 const Layout = () => {
 
@@ -51,7 +52,8 @@ const Layout = () => {
 				isCompleted: false,
 				reminderTime: 1707477897,
 				description: 'This is a brief description',
-				reminded: false
+				reminded: false,
+				icon: null
 			}
 
 			// displayNotification(dummyTask)
@@ -84,10 +86,29 @@ const Layout = () => {
 		})
 	}, [])
 
+	const taskReferences: any = useRef({})
+
+	const setTaskReference = (id: string, ref: any) => {
+		taskReferences.current = {...taskReferences.current, [id]: ref}
+	}
+
+	const getTaskReference = (id: string) => {
+		if (taskReferences.current && taskReferences.current[id]) {
+			return taskReferences.current[id]
+		} else {
+			return null
+		}
+		
+	}
+
+
 	return (
-		<ImageBackground style={styles.container} source={image} blurRadius={50}>
-			<Tasks />
-		</ImageBackground>
+		<UtilContext.Provider value={{setTaskReference, getTaskReference}}>
+			<ImageBackground style={styles.container} source={image} blurRadius={50}>
+				<Tasks />
+			</ImageBackground>
+		</UtilContext.Provider>
+		
 	)
 }
 

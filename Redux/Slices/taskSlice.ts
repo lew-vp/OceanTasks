@@ -15,7 +15,8 @@ export interface ITask {
     reminderTime: number | null,
     isCompleted: boolean,
     description: string,
-    reminded: boolean
+    reminded: boolean,
+    category: any
 }
 
 interface ITaskUpdates {
@@ -50,8 +51,10 @@ export const taskSlice = createSlice({
             console.log('passedTaskID: ' + taskID.payload)
             console.log(state)
             console.log('-----------------')
+            let deleteIndex = state.findIndex((task: ITask) => task.id === taskID.payload)
+            console.log('deleteindex: ' + deleteIndex)
             //broken atm
-            return state.filter((task: ITask) => task.id !== taskID.payload)
+            state = state.splice(deleteIndex, 1)
         }
     },
 

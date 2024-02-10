@@ -1,6 +1,6 @@
 // REACT NATIVE
 import { View, Text, Button, FlatList, ScrollView, SafeAreaView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 // REDUX
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Plus } from 'react-native-feather'
 import EditPanel from '../Components/EditPanel'
 import { RootState } from '../Redux/store'
+import { UtilContext } from '../contexts/UtilContext'
 
 const Tasks = (props: any) => {
 
@@ -26,6 +27,7 @@ const Tasks = (props: any) => {
 	const selectedTask = useSelector((state: RootState) => state.selectedTask.value)
 
 	const dispatch = useDispatch()
+	
 
 	const completedTasks = tasks.filter((task: ITask) => task.isCompleted)
 	const incompleteTasks = tasks.filter((task: ITask) => !task.isCompleted)

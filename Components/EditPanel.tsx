@@ -1,17 +1,23 @@
 // REACT NATIVE
 import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native'
-import React, { useMemo, useState } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 
 //REDUX
 import { useDispatch, useSelector } from 'react-redux';
 import { ITask, editTask, selectTaskByID } from '../Redux/Slices/taskSlice'
+import { RootState } from '../Redux/store';
+import { setSelectedTask } from '../Redux/Slices/selectedTaskSlice';
+import { current } from '@reduxjs/toolkit';
+
+// COMPONENTS
+import CategoryIcon, { categoryMap } from './CategoryIcon';
 
 // EXTERNAL LIBRARIES
 import { X } from 'react-native-feather'
 import Checkbox from 'expo-checkbox';
-import { RootState } from '../Redux/store';
-import { setSelectedTask } from '../Redux/Slices/selectedTaskSlice';
-import { current } from '@reduxjs/toolkit';
+import { UtilContext } from '../contexts/UtilContext';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import dayjs from 'dayjs';
 
 const EditPanel = () => {
 
@@ -21,6 +27,7 @@ const EditPanel = () => {
     const selectedTask = useSelector((state: RootState) => state.selectedTask.value)
 
     const [taskModifications, setTaskModifications] = useState<Partial<ITask>>({})
+    const utilFunctions = useContext(UtilContext)
 
     const taskDetails: ITask | null = useMemo(() => {
         // hydrate the modifications with the task details
@@ -28,7 +35,6 @@ const EditPanel = () => {
         if (locatedTask) setTaskModifications(locatedTask)
         return locatedTask
     }, [tasks, selectedTask])
-
 
     const updateTaskValue = (key: string, value: string) => {
         if (key && value) {
@@ -38,8 +44,18 @@ const EditPanel = () => {
 
     const toggleTaskCompletion = () => {
         if (taskDetails) {
-            dispatch(editTask({id: taskDetails.id, updates: {isCompleted: !taskDetails.isCompleted}}))
-            dispatch(setSelectedTask(null))
+
+            let taskReference = utilFunctions.getTaskReference(taskDetails.id)
+            if (taskReference) {
+                dispatch(setSelectedTask(null))
+                taskReference.openRight()
+                setTimeout(() => {
+                    dispatch(editTask({id: taskDetails.id, updates: {isCompleted: !taskDetails.isCompleted}}))
+                }, 350)
+            } else {
+                dispatch(editTask({id: taskDetails.id, updates: {isCompleted: !taskDetails.isCompleted}}))
+                    dispatch(setSelectedTask(null))
+            }
         }
     }
 
@@ -99,6 +115,18 @@ const EditPanel = () => {
                             onChangeText={(value) => updateTaskValue('description', value)}
                             defaultValue='Describe your task'
                         />
+
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={new Date(1598051730000)}
+                            mode={'datetime'}
+                        />
+
+                        <View style={styles.optionRow}>
+                            <Text>Category</Text>
+                        </View>
+
+                
 
                         <View style={styles.growContainer}>
                             <TouchableOpacity
@@ -178,6 +206,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column-reverse',
         paddingBottom: 40
+    },
+    optionRow: {
+        height: 40,
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     }
     
 })
