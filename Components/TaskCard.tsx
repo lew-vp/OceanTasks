@@ -35,12 +35,12 @@ const TaskCard = ({taskDetails, onDelete}: ITaskCard) => {
 	const cardRef: any = useRef()
 
 	const swipeToComplete = () => {
-		if (taskDetails.isCompleted === false) {
+	
 			cardRef.current.openLeft()
 			setTimeout(() => {
 				toggleTaskCompletion()
 			}, 300)
-		}
+		
 	}
 
 	const toggleTaskCompletion = () => {

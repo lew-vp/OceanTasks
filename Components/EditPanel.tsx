@@ -18,6 +18,7 @@ import Checkbox from 'expo-checkbox';
 import { UtilContext } from '../contexts/UtilContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const EditPanel = () => {
 
@@ -27,6 +28,7 @@ const EditPanel = () => {
     const selectedTask = useSelector((state: RootState) => state.selectedTask.value)
 
     const [taskModifications, setTaskModifications] = useState<Partial<ITask>>({})
+    const [selectCategoryOpen, setSelectCategoryOpen] = useState<any>(false)
     const utilFunctions = useContext(UtilContext)
 
     const taskDetails: ITask | null = useMemo(() => {
@@ -36,7 +38,7 @@ const EditPanel = () => {
         return locatedTask
     }, [tasks, selectedTask])
 
-    const updateTaskValue = (key: string, value: string) => {
+    const updateTaskValue = (key: string, value: string | number | boolean) => {
         if (key && value) {
             setTaskModifications({...taskModifications, [key]: value})
         }
@@ -87,18 +89,8 @@ const EditPanel = () => {
                         behavior='padding'
                     >
                         <View style={styles.boxHeader}>
-                            <TextInput
-                                style={styles.title}
-                                value={taskModifications.name}
-                                onChangeText={(value) => {
-                                    if (value === '') {
-                                        updateTaskValue('name', 'No Title')
-                                    } else {
-                                        updateTaskValue('name', value)}
-                                    }
-                                }
-                                
-                            />
+                            <Text style={styles.title}>{taskModifications.name}</Text>
+
                             <TouchableOpacity style={styles.closeBox} onPress={() => dispatch(setSelectedTask(null))}>
                                 <X 
                                     fontSize={20}
@@ -108,37 +100,66 @@ const EditPanel = () => {
                             </TouchableOpacity>
                             
                         </View>
+
+                        <View style={{...styles.optionRow}}>
+                            <Text>Task Name</Text>
+                            <TextInput
+                                    value={taskDetails.name}
+                                    onChangeText={(value) => {
+                                        if (value === '') {
+                                            updateTaskValue('name', 'No Title')
+                                        } else {
+                                            updateTaskValue('name', value)}
+                                        }
+                                    }
+                                />
+                        </View>
+
+                        <View style={{...styles.optionRow, paddingRight: 9}}>
+                            <Text>Reminder Time</Text>
+                            <DateTimePicker
+
+                                style={{backgroundColor: 'transparent'}}
+                                testID="dateTimePicker"
+                                value={taskDetails.reminderTime ? new Date(taskDetails.reminderTime) : new Date()}
+                                onChange={(val) => updateTaskValue('reminderTime', val.nativeEvent.timestamp / 1000)}
+                                mode={'datetime'}
+                            />
+                        </View>
                         
-                        <TextInput
-                            style={{...styles.description, opacity: taskDetails.description ? 1 : 0.5}}
-                            value={taskDetails.description === '' ? undefined : taskDetails.description} 
-                            onChangeText={(value) => updateTaskValue('description', value)}
-                            defaultValue='Describe your task'
-                        />
 
-                        <DateTimePicker
-                            testID="dateTimePicker"
-                            value={new Date(1598051730000)}
-                            mode={'datetime'}
-                        />
-
-                        <View style={styles.optionRow}>
+                        <View style={{...styles.optionRow, paddingRight: 0}}>
                             <Text>Category</Text>
+                           
+                            <DropDownPicker
+                                containerStyle={{width: 200, backgroundColor: 'transparent'}}
+                                style={{backgroundColor: 'transparent', borderWidth: 0}}
+                                open={selectCategoryOpen}
+                                value={taskDetails.category}
+                                items={Object.entries(categoryMap).map(([key, value]) => {
+                                    return {
+                                        label: key,
+                                        value: key,
+                                        icon: () => <CategoryIcon category={key} />
+                                      }
+                                })}
+                                setOpen={setSelectCategoryOpen}
+                                onSelectItem={(val) => val.value && console.log(val.value)}
+                                setValue={() => {}}
+                                setItems={() => {}}
+                            />
+                        
                         </View>
 
                 
 
                         <View style={styles.growContainer}>
                             <TouchableOpacity
-                                onPress={() => toggleTaskCompletion()}
+                                onPress={closeEditor}
                                 
                                 style={{...styles.fullWidthButton, backgroundColor: theme.primaryColor}}
                             >
-                                {taskDetails.isCompleted
-                                    ? <Text style={{color: 'white'}}>Mark As Incomplete</Text>
-                                    : <Text style={{color: 'white'}}>Mark As Complete</Text>
-                                }
-                                
+                                <Text style={{color: 'white'}}>Save</Text>
                             </TouchableOpacity>
                         </View>
                         
@@ -166,7 +187,7 @@ const styles = StyleSheet.create({
         height: 400, 
         padding: 20,
 
-        gap: 20,
+        gap: 10,
 
 
         borderTopRightRadius: 20,
@@ -185,7 +206,8 @@ const styles = StyleSheet.create({
     boxHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 15
     },
     closeBox: {
         borderWidth: 2,
@@ -208,12 +230,40 @@ const styles = StyleSheet.create({
         paddingBottom: 40
     },
     optionRow: {
-        height: 40,
+        height: 50,
+        paddingLeft: 13,
+        paddingRight: 13,
+        borderWidth: 0,
         alignItems: 'center',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        backgroundColor: '#e9e9e9',
+        borderRadius: 8
     }
     
 })
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+      fontSize: 16,
+      paddingVertical: 12,
+      paddingHorizontal: 10,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 4,
+      color: 'black',
+      paddingRight: 30, // to ensure the text is never behind the icon
+    },
+    inputAndroid: {
+      fontSize: 16,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderWidth: 0.5,
+      borderColor: 'purple',
+      borderRadius: 8,
+      color: 'black',
+      paddingRight: 30, // to ensure the text is never behind the icon
+    },
+  });
 
 export default EditPanel

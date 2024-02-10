@@ -24,16 +24,16 @@ interface categoryMap {
 
 
 export const categoryMap: categoryMap = {
-    routine: <Clock color={'grey'}/>,
-    shopping: <ShoppingBag color={'grey'}/>,
-    default: <Square color={'grey'}/>
+    Routine: <Clock color={'grey'}/>,
+    Shopping: <ShoppingBag color={'grey'}/>,
+    Default: <Square color={'grey'}/>
 }
 
 const CategoryIcon = ({category}: ICategoryIcon) => {
 
     const theme = useSelector((state: RootState) => state.theme)
 
-    
+    console.log(category)
 
     if (category && categoryMap[category]) {
         return categoryMap[category]
