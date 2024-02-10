@@ -1,6 +1,6 @@
 // REACT NATIVE
-import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native'
-import React, { useContext, useMemo, useState } from 'react'
+import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, KeyboardAvoidingView, Pressable } from 'react-native'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 //REDUX
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,16 +9,15 @@ import { RootState } from '../Redux/store';
 import { setSelectedTask } from '../Redux/Slices/selectedTaskSlice';
 import { current } from '@reduxjs/toolkit';
 
-// COMPONENTS
-import CategoryIcon, { categoryMap } from './CategoryIcon';
 
 // EXTERNAL LIBRARIES
 import { X } from 'react-native-feather'
 import Checkbox from 'expo-checkbox';
 import { UtilContext } from '../contexts/UtilContext';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import DropDownPicker from 'react-native-dropdown-picker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import useCategories from '../hooks/useCategories';
 
 const EditPanel = () => {
 
@@ -30,6 +29,9 @@ const EditPanel = () => {
     const [taskModifications, setTaskModifications] = useState<Partial<ITask>>({})
     const [selectCategoryOpen, setSelectCategoryOpen] = useState<any>(false)
     const utilFunctions = useContext(UtilContext)
+    const [datePickerOpen, setDatePickerOpen] = useState<any>(false)
+
+    const { getCategoryNames, getCategoryIcon } = useCategories()
 
     const taskDetails: ITask | null = useMemo(() => {
         // hydrate the modifications with the task details
@@ -39,10 +41,16 @@ const EditPanel = () => {
     }, [tasks, selectedTask])
 
     const updateTaskValue = (key: string, value: string | number | boolean) => {
+        console.log(value)
         if (key && value) {
             setTaskModifications({...taskModifications, [key]: value})
         }
     }
+
+    useEffect(() => {
+        console.log('new task mods')
+        console.log(taskModifications)
+    }, [taskModifications])
 
     const toggleTaskCompletion = () => {
         if (taskDetails) {
@@ -61,17 +69,21 @@ const EditPanel = () => {
         }
     }
 
-    const closeEditor = () => {
+    const saveChanges = () => {
         if (taskModifications && taskDetails) {
-            // update the store with any modifications
             dispatch(editTask({id: taskDetails.id, updates: taskModifications}))
         }
+        closeEditor()
+    }
+
+    const closeEditor = () => {
         dispatch(setSelectedTask(null))
+        setSelectCategoryOpen(false)
     }
 
     return (
 
-        <Modal
+<Modal
             style={{ flex: 1, marginTop: 22 }}
             animationType='slide'
             visible={selectedTask !== null}
@@ -89,13 +101,12 @@ const EditPanel = () => {
                         behavior='padding'
                     >
                         <View style={styles.boxHeader}>
-                            <Text style={styles.title}>{taskModifications.name}</Text>
+                            <Text style={styles.title}>{taskDetails.name}</Text>
 
                             <TouchableOpacity style={styles.closeBox} onPress={() => dispatch(setSelectedTask(null))}>
                                 <X 
                                     fontSize={20}
                                     color={'gray'}
-                                    
                                 />
                             </TouchableOpacity>
                             
@@ -104,7 +115,7 @@ const EditPanel = () => {
                         <View style={{...styles.optionRow}}>
                             <Text>Task Name</Text>
                             <TextInput
-                                    value={taskDetails.name}
+                                    value={taskModifications.name}
                                     onChangeText={(value) => {
                                         if (value === '') {
                                             updateTaskValue('name', 'No Title')
@@ -117,13 +128,18 @@ const EditPanel = () => {
 
                         <View style={{...styles.optionRow, paddingRight: 9}}>
                             <Text>Reminder Time</Text>
-                            <DateTimePicker
-
-                                style={{backgroundColor: 'transparent'}}
-                                testID="dateTimePicker"
-                                value={taskDetails.reminderTime ? new Date(taskDetails.reminderTime) : new Date()}
-                                onChange={(val) => updateTaskValue('reminderTime', val.nativeEvent.timestamp / 1000)}
-                                mode={'datetime'}
+                            <Pressable onPress={() => setDatePickerOpen(true)}>
+                                <Text>{taskModifications.reminderTime ? dayjs.unix(taskModifications.reminderTime).format('DD/MM/YYYY hh:mm') : '- Select -'}</Text>
+                            </Pressable>
+                            <DateTimePickerModal
+                                isVisible={datePickerOpen}
+                                mode="datetime"
+                                onConfirm={(newTime) => {
+                                    updateTaskValue('reminderTime', dayjs(newTime).unix())
+                                    setDatePickerOpen(false)
+                                }}
+                                onCancel={() => setDatePickerOpen(false)}
+                                minimumDate={dayjs().toDate()}
                             />
                         </View>
                         
@@ -132,19 +148,19 @@ const EditPanel = () => {
                             <Text>Category</Text>
                            
                             <DropDownPicker
-                                containerStyle={{width: 200, backgroundColor: 'transparent'}}
+                                containerStyle={{width: 150, backgroundColor: 'transparent'}}
                                 style={{backgroundColor: 'transparent', borderWidth: 0}}
                                 open={selectCategoryOpen}
-                                value={taskDetails.category}
-                                items={Object.entries(categoryMap).map(([key, value]) => {
+                                value={taskModifications.category}
+                                items={getCategoryNames().map((categoryName) => {
                                     return {
-                                        label: key,
-                                        value: key,
-                                        icon: () => <CategoryIcon category={key} />
+                                        label: categoryName,
+                                        value: categoryName,
+                                        icon: () => getCategoryIcon(categoryName, theme.primaryColor)
                                       }
                                 })}
                                 setOpen={setSelectCategoryOpen}
-                                onSelectItem={(val) => val.value && console.log(val.value)}
+                                onSelectItem={(val) => val.value && updateTaskValue('category', val.value)}
                                 setValue={() => {}}
                                 setItems={() => {}}
                             />
@@ -155,7 +171,7 @@ const EditPanel = () => {
 
                         <View style={styles.growContainer}>
                             <TouchableOpacity
-                                onPress={closeEditor}
+                                onPress={saveChanges}
                                 
                                 style={{...styles.fullWidthButton, backgroundColor: theme.primaryColor}}
                             >
@@ -170,6 +186,8 @@ const EditPanel = () => {
             }
 
         </Modal>
+
+        
 
     )
 }

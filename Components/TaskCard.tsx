@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native'
 import React, { Ref, useEffect, useRef, useImperativeHandle, useContext, useState } from 'react'
 import { ITask, editTask, removeTask } from '../Redux/Slices/taskSlice'
-import { X } from 'react-native-feather'
+import { Check, Trash, X } from 'react-native-feather'
 import Checkbox from 'expo-checkbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../Redux/store';
@@ -9,16 +9,12 @@ import { setSelectedTask } from '../Redux/Slices/selectedTaskSlice';
 import { Swipeable } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { UtilContext } from '../contexts/UtilContext';
-import CategoryIcon from './CategoryIcon';
+import useCategories from '../hooks/useCategories';
 
 interface ITaskCard {
 	taskDetails: ITask,
 	index: number,
 	onDelete: (taskID: string) => void,
-}
-
-const iconMap = {
-
 }
 
 
@@ -30,17 +26,18 @@ const TaskCard = ({taskDetails, onDelete}: ITaskCard) => {
 	const selectedTask = useSelector((state: RootState) => state.selectedTask.value)
 	const theme = useSelector((state: RootState) => state.theme)
 
-	const isSwiping = useState<string | null>(null)
+	const {getCategoryIcon} = useCategories()
+
+	const [isSwiping, setIsSwiping] = useState<string | null>(null)
 
 	const cardRef: any = useRef()
 
 	const swipeToComplete = () => {
-	
 			cardRef.current.openLeft()
+			setIsSwiping('left')
 			setTimeout(() => {
 				toggleTaskCompletion()
 			}, 300)
-		
 	}
 
 	const toggleTaskCompletion = () => {
@@ -61,56 +58,104 @@ const TaskCard = ({taskDetails, onDelete}: ITaskCard) => {
 		</View>
 	)
 
-	// utilFunctions.setTaskReference(taskDetails.id, element)}
+	const getCardBackgroundColor = () => {
+		let backgroundColor = theme.primaryColor
+
+		if (selectedTask === taskDetails.id) {
+			backgroundColor = theme.primarySelected
+		}
+		
+		if (isSwiping) {
+			if (isSwiping === 'right') {
+				backgroundColor = 'rgba(176, 25, 25, 0.85)'	
+			} else if (!taskDetails.isCompleted) {
+				backgroundColor = 'rgba(37, 156, 35, 0.85)'
+			}
+		}
+		return backgroundColor
+	}
+
+	const getCardContent = () => {
+		if (isSwiping === 'right') {
+			return (
+				<View
+					style={{
+						...styles.taskCard,
+						justifyContent: 'center',
+						backgroundColor: getCardBackgroundColor(),
+					}}
+				>
+					<Trash color={'white'}/>
+				</View>
+			)
+		} else if (isSwiping === 'left' && !taskDetails.isCompleted) {
+			return (
+				<View
+					style={{
+						...styles.taskCard,
+						justifyContent: 'center',
+						backgroundColor: getCardBackgroundColor(),
+					}}
+				>
+					<Check color={'white'}/>
+				</View>
+			)
+		} else {
+			return (
+				<View
+					style={{
+						...styles.taskCard,
+						backgroundColor: getCardBackgroundColor(),
+					}}
+				>
+					<Pressable 
+						style={styles.checkBox}
+						onPress={swipeToComplete}
+					>
+						<Checkbox
+							style={{height: 23, width: 23}}
+							value={taskDetails.isCompleted}
+							onValueChange={swipeToComplete}
+							
+							color={taskDetails.isCompleted ? theme.primaryColor : '#b3b3b3'}
+						/>
+					</Pressable>
+					<Pressable 
+						style={styles.grouper}
+						onPress={() => {
+							dispatch(setSelectedTask(taskDetails.id))}
+						}
+					>
+						<Text style={styles.text}>{taskDetails.name}</Text>
+						{getCategoryIcon(taskDetails.category, '#eeeeee')}
+					</Pressable>
+				</View>
+			)
+		}
+	}
 
 	return (
 		<Swipeable
 			ref={cardRef}
 			key={taskDetails.id}
 			renderRightActions={renderRight}
-			renderLeftActions={renderLeft}
+			renderLeftActions={!taskDetails.isCompleted ? renderLeft : undefined}
+			onSwipeableOpenStartDrag={(swipe) => {
+				setIsSwiping(swipe)
+			}}
 			onSwipeableOpen={swipe => {
+				
 				if (swipe === 'right') {
 					dispatch(removeTask(taskDetails.id))
 				} else {
 					toggleTaskCompletion()
 				}
 				console.log('swipeee')
-				
 			}}
+			onSwipeableClose={() => setIsSwiping(null)}
 			overshootRight={true}
 		>
-			<View
-				style={{
-					...styles.taskCard,
-					backgroundColor: selectedTask === taskDetails.id ? theme.primarySelected : theme.primaryColor,
-				}}
-				
-			>
-				<Pressable 
-					style={styles.checkBox}
-					onPress={swipeToComplete}
-				>
-					<Checkbox
-						style={{height: 23, width: 23}}
-						value={taskDetails.isCompleted}
-						onValueChange={swipeToComplete}
-						
-						color={taskDetails.isCompleted ? theme.primaryColor : '#b3b3b3'}
-					/>
-				</Pressable>
-				<Pressable 
-					style={styles.grouper}
-					onPress={() => {
-						dispatch(setSelectedTask(taskDetails.id))}
-					}
-				>
-					<Text style={styles.text}>{taskDetails.name}</Text>
-					<CategoryIcon category={taskDetails.category}/>
-				</Pressable>
-
-				
-			</View>
+			{getCardContent()}
 		</Swipeable>
 		
 	)
