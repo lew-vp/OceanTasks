@@ -15,7 +15,7 @@ import { v4 as uuidV4 } from 'uuid'
 import dayjs from 'dayjs'
 import TaskGroup from '../Components/TaskGroup'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Plus } from 'react-native-feather'
+import { ArrowLeft, ArrowRight, Plus, PlusSquare } from 'react-native-feather'
 import EditPanel from '../Components/EditPanel'
 import { RootState } from '../Redux/store'
 import { UtilContext } from '../contexts/UtilContext'
@@ -34,24 +34,49 @@ const Tasks = (props: any) => {
 
 	return (
 		<SafeAreaView style={styles.layout}>
-			<ScrollView 
-				contentContainerStyle={{ alignSelf: 'stretch', gap: 20}}
-			>
-				{[...tasks].some((task: ITask) => task.isCompleted) && 
-					<TaskGroup 
-						title='Completed' 
-						tasks={completedTasks}
-					/>
-				}
+			{tasks && tasks.length
+				?	<ScrollView 
+						contentContainerStyle={{ alignSelf: 'stretch', gap: 20, paddingTop: 10}}
+					>
+						{[...tasks].some((task: ITask) => task.isCompleted) && 
+							<TaskGroup 
+								title='Completed' 
+								tasks={completedTasks}
+							/>
+						}
 
-				{[...tasks].some((task: ITask) => !task.isCompleted) && 
-					<TaskGroup 
-						title='To Do' 
-						tasks={incompleteTasks} 
-					/>
-				}
+						{[...tasks].some((task: ITask) => !task.isCompleted) && 
+							<TaskGroup 
+								title='To Do' 
+								tasks={incompleteTasks} 
+							/>
+						}
+					</ScrollView>
+				:	<View style={{flex: 1, borderWidth: 1.5, borderRadius: 10, borderColor: theme.opaquePrimaryBorder, justifyContent: 'center', alignItems :'center', gap: 20}}>
+						<View style={{width: '100%', justifyContent: 'center', flexDirection: 'row', alignItems: 'center', gap: 5}}>
+							<Text style={{fontSize: 17}}>Press </Text>
+							<PlusSquare color={theme.primaryColor}/>
+							<Text style={{fontSize: 17}}> to <Text style={{color: theme.primaryColor}}>add</Text> a task</Text>
+						</View>
 
-			</ScrollView>
+						{/* <View style={{width: '100%', alignItems: 'center'}}>
+							<View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+								<Text>Swipe </Text>
+								<ArrowLeft color={theme.deleteRed}/>
+								<Text> to <Text style={{color: theme.deleteRed}}>delete</Text> a task</Text>
+							</View>
+							<View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+								<Text>Swipe </Text>
+								<ArrowRight color={theme.confirmGreen}/>
+								<Text> to <Text style={{color: theme.confirmGreen}}>complete</Text> a task</Text>
+							</View>
+						</View> */}
+						
+				
+					</View>
+			
+			}
+			
 			
 			<TouchableOpacity 
 				style={{...styles.addPrompt, borderColor: theme.primaryColor}}
@@ -69,12 +94,14 @@ const Tasks = (props: any) => {
 const styles = StyleSheet.create({
 
     layout: {
-		height: 700,
+		height: '100%',
 		width: '100%',
-		gap: 10
+		gap: 10,
+		borderWidth: 0
 	},
 
 	addPrompt: {
+		padding: 5,
 		alignItems: 'center',
 		gap: 10,
 		borderWidth: 2,

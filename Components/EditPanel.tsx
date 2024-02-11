@@ -1,5 +1,5 @@
 // REACT NATIVE
-import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, KeyboardAvoidingView, Pressable } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Pressable, Dimensions, Keyboard } from 'react-native'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 //REDUX
@@ -18,6 +18,8 @@ import dayjs from 'dayjs';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import useCategories from '../hooks/useCategories';
+import Modal from "react-native-modal";
+import { isSharedValue } from 'react-native-reanimated';
 
 const EditPanel = () => {
 
@@ -83,25 +85,27 @@ const EditPanel = () => {
 
     return (
 
-<Modal
-            style={{ flex: 1, marginTop: 22 }}
-            animationType='slide'
-            visible={selectedTask !== null}
-            transparent={true}
-            onRequestClose={closeEditor}
+        <Modal
+            style={{ flex: 1, margin: 0 }}
+            isVisible={selectedTask !== null}
+            avoidKeyboard={true}
+            animationOut={'slideOutDown'}
+            coverScreen={true}
+            onSwipeComplete={closeEditor}
+            swipeDirection={'down'}
+            useNativeDriverForBackdrop={true}
         >
-            {taskDetails &&
+
                 <View style={styles.editPanel}>
                     <TouchableOpacity
-                        style={{ flex: 1, borderWidth: 0 }}
+                        style={{ flex: 1 }}
                         onPress={closeEditor}
                     />
-                    <KeyboardAvoidingView 
+                    <View 
                         style={styles.interfaceWindow}
-                        behavior='padding'
                     >
                         <View style={styles.boxHeader}>
-                            <Text style={styles.title}>{taskDetails.name}</Text>
+                            <Text style={styles.title}>{taskDetails && taskDetails.name}</Text>
 
                             <TouchableOpacity style={styles.closeBox} onPress={() => dispatch(setSelectedTask(null))}>
                                 <X 
@@ -128,7 +132,7 @@ const EditPanel = () => {
 
                         <View style={{...styles.optionRow, paddingRight: 9}}>
                             <Text>Reminder Time</Text>
-                            <Pressable onPress={() => setDatePickerOpen(true)}>
+                            <Pressable onPress={() => {Keyboard.dismiss(); setDatePickerOpen(true) }}>
                                 <Text>{taskModifications.reminderTime ? dayjs.unix(taskModifications.reminderTime).format('DD/MM/YYYY hh:mm') : '- Select -'}</Text>
                             </Pressable>
                             <DateTimePickerModal
@@ -164,27 +168,19 @@ const EditPanel = () => {
                                 setValue={() => {}}
                                 setItems={() => {}}
                             />
-                        
                         </View>
 
-                
+                        <View style={{flex: 1}}/>
 
-                        <View style={styles.growContainer}>
-                            <TouchableOpacity
-                                onPress={saveChanges}
-                                
-                                style={{...styles.fullWidthButton, backgroundColor: theme.primaryColor}}
-                            >
-                                <Text style={{color: 'white'}}>Save</Text>
-                            </TouchableOpacity>
-                        </View>
-                        
-
-
-                    </KeyboardAvoidingView>
+                        <TouchableOpacity
+                            onPress={saveChanges}
+                            style={{
+                                ...styles.fullWidthButton, backgroundColor: theme.primaryColor}}
+                        >
+                            <Text style={{color: 'white'}}>Save</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            }
-
         </Modal>
 
         
@@ -199,11 +195,13 @@ const styles = StyleSheet.create({
         flex: 1,
         borderWidth: 0,
         borderColor: 'red',
+
         
     },
     interfaceWindow: {
-        height: 400, 
+        height: 380, 
         padding: 20,
+        paddingBottom: 30,
 
         gap: 10,
 

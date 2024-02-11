@@ -9,7 +9,10 @@ export interface ITheme {
     primaryColor: string,
     primarySelected: string,
     primaryBorder: string,
-    primarySelectedBorder: string
+    primarySelectedBorder: string,
+    opaquePrimaryBorder: string,
+    deleteRed: string,
+    confirmGreen: string
 }
 
 
