@@ -44,7 +44,11 @@ const EditPanel = () => {
 
     const updateTaskValue = (key: string, value: string | number | boolean) => {
         console.log(value)
-        if (key && value) {
+        if (key && (value || value === '')) {
+            console.log('setting mod')
+            console.log(key)
+            console.log(value)
+            console.log('----------------')
             setTaskModifications({...taskModifications, [key]: value})
         }
     }
@@ -73,7 +77,13 @@ const EditPanel = () => {
 
     const saveChanges = () => {
         if (taskModifications && taskDetails) {
-            dispatch(editTask({id: taskDetails.id, updates: taskModifications}))
+            dispatch(editTask({
+                id: taskDetails.id, 
+                updates: {
+                    ...taskModifications, 
+                    name: taskModifications.name || 'New Task'
+                }
+            }))
         }
         closeEditor()
     }
@@ -121,11 +131,7 @@ const EditPanel = () => {
                             <TextInput
                                     value={taskModifications.name}
                                     onChangeText={(value) => {
-                                        if (value === '') {
-                                            updateTaskValue('name', 'No Title')
-                                        } else {
-                                            updateTaskValue('name', value)}
-                                        }
+                                        updateTaskValue('name', value)}
                                     }
                                 />
                         </View>
@@ -153,6 +159,8 @@ const EditPanel = () => {
                            
                             <DropDownPicker
                                 containerStyle={{width: 150, backgroundColor: 'transparent'}}
+                                listItemContainerStyle={{backgroundColor: '#e9e9e9'}}
+                                dropDownContainerStyle={{borderWidth: 1.5, borderTopRightRadius: 3, borderTopLeftRadius: 3, borderColor: 'rgba(120, 120, 120, 0.5)'}}
                                 style={{backgroundColor: 'transparent', borderWidth: 0}}
                                 open={selectCategoryOpen}
                                 value={taskModifications.category}

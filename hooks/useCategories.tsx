@@ -7,7 +7,7 @@ import { Dimensions } from 'react-native'
 import { ITask } from '../Redux/Slices/taskSlice'
 
 // EXTERNAL LIBRARIES
-import { Box, ChevronDown, ChevronRight, Clock, Edit, ShoppingBag, Square, X } from 'react-native-feather'
+import { Box, ChevronDown, ChevronRight, Circle, Clock, DollarSign, Edit, Maximize, Minus, ShoppingBag, Square, X } from 'react-native-feather'
 import { current } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from '../Redux/store'
@@ -28,7 +28,8 @@ const useCategories = () => {
         return {
             Routine: <Clock color={color}/>,
             Shopping: <ShoppingBag color={color}/>,
-            Default: <Square color={color}/>
+            Finance: <DollarSign color={color} />,
+            None: <Minus color={'transparent'}/>
         }
     }
 

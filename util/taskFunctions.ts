@@ -10,6 +10,6 @@ export const makeBlankTask = () => {
         description: '',
         reminded: false,
         reference: null,
-        category: null
+        category: 'None'
     })
 }

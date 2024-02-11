@@ -179,9 +179,8 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.15,
 		shadowOffset: {width: 0.5, height: 0.5},
 		shadowColor: '#424242',
-		elevation: 5
-
-
+		elevation: 5,
+		backgroundColor: 'black'
 	},
 	checkBox: {
 		width: 40,

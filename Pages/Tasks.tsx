@@ -1,5 +1,5 @@
 // REACT NATIVE
-import { View, Text, Button, FlatList, ScrollView, SafeAreaView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, Button, FlatList, ScrollView, SafeAreaView, StyleSheet, Dimensions, TouchableOpacity, Image } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
 // REDUX
@@ -20,11 +20,14 @@ import EditPanel from '../Components/EditPanel'
 import { RootState } from '../Redux/store'
 import { UtilContext } from '../contexts/UtilContext'
 
+
 const Tasks = (props: any) => {
 
 	const tasks = useSelector((state: RootState) => state.tasks)
 	const theme = useSelector((state: RootState) => state.theme)
 	const selectedTask = useSelector((state: RootState) => state.selectedTask.value)
+
+	const logo = require('../assets/oceanEdited.png')
 
 	const dispatch = useDispatch()
 	
@@ -34,6 +37,9 @@ const Tasks = (props: any) => {
 
 	return (
 		<SafeAreaView style={styles.layout}>
+			<View style={{width: '100%', alignItems: 'center'}}>
+				<Image source={logo} style={{height: 40, width: 40}}/>
+			</View>
 			{tasks && tasks.length
 				?	<ScrollView 
 						contentContainerStyle={{ alignSelf: 'stretch', gap: 20, paddingTop: 10}}

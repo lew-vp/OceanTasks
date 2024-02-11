@@ -1,19 +1,26 @@
 import { View, Text, StyleSheet, ImageBackground } from 'react-native'
-import React, { createContext, useEffect, useMemo, useRef } from 'react'
+import React, { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Tasks from './Pages/Tasks'
 import { getAsyncTasks, setAsyncTasks } from './util/storageFunctions'
-import { ITask, setTasks } from './Redux/Slices/taskSlice'
+import { ITask, editTask, setTasks } from './Redux/Slices/taskSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './Redux/store'
 import notifee from '@notifee/react-native'
 import dayjs from 'dayjs'
 import { UtilContext } from './contexts/UtilContext'
 
+// EXTERNAL LIBRARIES
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
+
 const Layout = () => {
 
 	const image = require('./assets/oceanBackground.png')
 	const dispatch = useDispatch()
 	const tasks: ITask[] = useSelector((state: RootState) => state.tasks)
+
+	const [appIsReady, setAppIsReady] = useState<boolean>(false)
 
 	const displayNotification = async (task: ITask) => {
 		await notifee.requestPermission() // need to do this earlier
@@ -46,26 +53,27 @@ const Layout = () => {
 		const reminderClock = setInterval(() => {
 			let currentTimestamp = dayjs().unix()
 
-			let dummyTask: ITask = {
-				id: 'd9879486-ec57-4857-8963-ffd0643dfa31',
-				name: 'MyTask',
-				isCompleted: false,
-				reminderTime: 1707477897,
-				description: 'This is a brief description',
-				reminded: false,
-				icon: null
-			}
-
-			// displayNotification(dummyTask)
+			console.log(tasks.length)
 
 			for (let task of tasks) {
 				if (
+					task.reminderTime !== 0 &&
 					task.reminderTime !== null &&
 					task.reminderTime < currentTimestamp &&
 					task.isCompleted === false &&
 					task.reminded === false
 				) {
-					//displayNotification(task)
+					console.log(task.name)
+					console.log(task.reminderTime)
+					displayNotification(task)
+					dispatch(editTask({
+						id: task.id, 
+						updates: {
+							reminded: true,
+							reminderTime: 0
+						}
+					}))
+					// set reminded
 				}
 			}
 		}, 10000)
@@ -83,8 +91,16 @@ const Layout = () => {
 			} else {
 				console.log('no async tasks')
 			}
+			setAppIsReady(true)
 		})
 	}, [])
+
+	const onLayoutRootView = useCallback(async () => {
+		if (appIsReady) {
+			console.log('ready to go')
+		  await SplashScreen.hideAsync();
+		}
+	  }, [appIsReady]);
 
 	const taskReferences: any = useRef({})
 
@@ -104,7 +120,7 @@ const Layout = () => {
 
 	return (
 		<UtilContext.Provider value={{setTaskReference, getTaskReference}}>
-			<ImageBackground style={styles.container} source={image} blurRadius={50}>
+			<ImageBackground style={styles.container} source={image} blurRadius={50} onLayout={onLayoutRootView}>
 				<Tasks />
 			</ImageBackground>
 		</UtilContext.Provider>

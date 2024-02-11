@@ -30,7 +30,8 @@
     "react-native-reanimated": "~3.6.2",
     "react-native-svg": "14.1.0",
     "react-redux": "^9.1.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "expo-splash-screen": "~0.26.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
