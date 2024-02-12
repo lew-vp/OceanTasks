@@ -20,8 +20,6 @@ A simple mobile application for managing your tasks. Create and manage your task
 
 ## Authors
 
-Contributors names and contact info
-
 Lewis Potter  
 https://www.linkedin.com/in/lewis-potter-25b746183/
 
