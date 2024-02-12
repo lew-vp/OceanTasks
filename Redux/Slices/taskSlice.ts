@@ -8,7 +8,6 @@ import 'react-native-get-random-values';
 
 // TOOLS
 import { makeBlankTask } from '../../util/taskFunctions';
-import { setAsyncTasks } from '../../util/storageFunctions';
 
 export interface ITask {
     id: string,

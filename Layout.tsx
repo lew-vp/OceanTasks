@@ -1,14 +1,20 @@
+
+// REACT NATIVE
 import { View, Text, StyleSheet, ImageBackground, Alert, AppState } from 'react-native'
 import React, { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Tasks from './Pages/Tasks'
+
+//REDUX
 import { getAsyncTasks, setAsyncTasks } from './util/storageFunctions'
 import { ITask, editTask, setTasks } from './Redux/Slices/taskSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './Redux/store'
-import notifee, { RepeatFrequency, TimestampTrigger, TriggerType } from '@notifee/react-native'
+
+// COMPONENTS
+import Tasks from './Pages/Tasks'
 
 // EXTERNAL LIBRARIES
 import * as SplashScreen from 'expo-splash-screen';
+import notifee, { RepeatFrequency, TimestampTrigger, TriggerType } from '@notifee/react-native'
 
 SplashScreen.preventAutoHideAsync();
 

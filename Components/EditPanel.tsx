@@ -86,19 +86,18 @@ const EditPanel = () => {
                     >
                         <View style={styles.boxHeader}>
                             <Text style={styles.title}>{taskDetails && taskDetails.name}</Text>
-
                             <TouchableOpacity style={styles.closeBox} onPress={() => dispatch(setSelectedTask(null))}>
                                 <X 
                                     fontSize={20}
                                     color={'gray'}
                                 />
                             </TouchableOpacity>
-                            
                         </View>
 
                         <View style={{...styles.optionRow}}>
                             <Text>Task Name</Text>
                             <TextInput
+                                    selectTextOnFocus
                                     value={taskModifications.name}
                                     onChangeText={(value) => {
                                         updateTaskValue('name', value)}
@@ -109,11 +108,11 @@ const EditPanel = () => {
                         <View style={{...styles.optionRow, paddingRight: 9}}>
                             <Text>Reminder Time</Text>
                             <Pressable onPress={() => {Keyboard.dismiss(); setDatePickerOpen(true) }}>
-                                <Text>{taskModifications.reminderTime ? dayjs.unix(taskModifications.reminderTime).format('DD/MM/YYYY hh:mm') : '- Select -'}</Text>
+                                <Text>{taskModifications.reminderTime ? dayjs.unix(taskModifications.reminderTime).format('DD/MM/YYYY h:mm A') : '- Select -'}</Text>
                             </Pressable>
                             <DateTimePickerModal
                                 accentColor={theme.primaryColor}
-                            buttonTextColorIOS={theme.primaryColor}
+                                buttonTextColorIOS={theme.primaryColor}
                                 isVisible={datePickerOpen}
                                 mode="datetime"
                                 onConfirm={(newTime) => {

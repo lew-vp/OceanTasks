@@ -1,4 +1,7 @@
+// EXTERNAL LIBRARIES
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// REDUX
 import { ITask } from "../Redux/Slices/taskSlice";
 
 export const areArraysEqual = (arr1: ITask[], arr2: ITask[]) => {
