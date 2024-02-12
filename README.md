@@ -1,55 +1,29 @@
 # Ocean Tasks
 
-A simple mobile application for managing tasks
-
-## Description
-
-An in-depth paragraph about your project and overview of use.
+A simple mobile application for managing your tasks. Create and manage your tasks, set up push notification reminders, and mark them as complete when finished!
 
 ## Getting Started
 
-### Dependencies
+### Installing Android
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+* Download the latest build from the following link:
+* https://expo.dev/artifacts/eas/jw79nYWtfFnRRx9hc9SfFh.apk
+  
+* If your device warns you against installing the app, please select "Allow". It's safe :))
 
-### Installing
+## Using Ocean Tasks
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
-
-### Executing program
-
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
-
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+* Press the "+" button to add a new task
+* Swipe left and right on a task to delete/complete it
+* Press a task to modify it's name, category, or reminder date, then save to finalise
+* Complete your tasks on time! 
 
 ## Authors
 
-Contributors names and contact info
-
 Lewis Potter  
-(LinkedIn URL)
+https://www.linkedin.com/in/lewis-potter-25b746183/
 
 ## Version History
 
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
+* 1.0.0
     * Initial Release
-
-## License
-
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
-
-## Acknowledgments
