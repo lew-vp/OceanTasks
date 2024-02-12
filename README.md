@@ -11,7 +11,7 @@ A simple mobile application for managing your tasks. Create and manage your task
   
 * If your device warns you against installing the app, please select "Allow". It's safe :))
 
-### Using Ocean Tasks
+## Using Ocean Tasks
 
 * Press the "+" button to add a new task
 * Swipe left and right on a task to delete/complete it
