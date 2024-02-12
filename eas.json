@@ -24,9 +24,16 @@
         "buildType": "apk"
       }
     },
-    "production": {}
+    "production": {
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "lewis@detection-technologies.com",
+        "ascAppId": "6477801207",
+        "appleTeamId": "6YTA4ZA4HL"
+      }
+    }
   }
 }
