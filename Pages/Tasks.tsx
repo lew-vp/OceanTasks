@@ -1,36 +1,29 @@
 // REACT NATIVE
-import { View, Text, Button, FlatList, ScrollView, SafeAreaView, StyleSheet, Dimensions, TouchableOpacity, Image } from 'react-native'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import { View, Text, ScrollView, SafeAreaView, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import React from 'react'
 
 // REDUX
 import { useDispatch, useSelector } from 'react-redux'
-import { ITask, addBlankTask, removeTask, setTasks } from '../Redux/Slices/taskSlice'
+import { ITask, addBlankTask } from '../Redux/Slices/taskSlice'
+import { RootState } from '../Redux/store'
 
 // COMPONENTS
-import TaskCard from '../Components/TaskCard'
+import TaskGroup from '../Components/TaskGroup'
+import EditPanel from '../Components/EditPanel'
 
 // EXTERNAL LIBRARIES
 import 'react-native-get-random-values';
-import { v4 as uuidV4 } from 'uuid'
-import dayjs from 'dayjs'
-import TaskGroup from '../Components/TaskGroup'
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ArrowLeft, ArrowRight, Plus, PlusSquare } from 'react-native-feather'
-import EditPanel from '../Components/EditPanel'
-import { RootState } from '../Redux/store'
-import { UtilContext } from '../contexts/UtilContext'
+import { Plus, PlusSquare } from 'react-native-feather'
 
 
-const Tasks = (props: any) => {
+const Tasks = () => {
 
 	const tasks = useSelector((state: RootState) => state.tasks)
 	const theme = useSelector((state: RootState) => state.theme)
-	const selectedTask = useSelector((state: RootState) => state.selectedTask.value)
 
 	const logo = require('../assets/oceanEdited.png')
 
 	const dispatch = useDispatch()
-	
 
 	const completedTasks = tasks.filter((task: ITask) => task.isCompleted)
 	const incompleteTasks = tasks.filter((task: ITask) => !task.isCompleted)
@@ -64,25 +57,8 @@ const Tasks = (props: any) => {
 							<PlusSquare color={theme.primaryColor}/>
 							<Text style={{fontSize: 17}}> to <Text style={{color: theme.primaryColor}}>add</Text> a task</Text>
 						</View>
-
-						{/* <View style={{width: '100%', alignItems: 'center'}}>
-							<View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
-								<Text>Swipe </Text>
-								<ArrowLeft color={theme.deleteRed}/>
-								<Text> to <Text style={{color: theme.deleteRed}}>delete</Text> a task</Text>
-							</View>
-							<View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
-								<Text>Swipe </Text>
-								<ArrowRight color={theme.confirmGreen}/>
-								<Text> to <Text style={{color: theme.confirmGreen}}>complete</Text> a task</Text>
-							</View>
-						</View> */}
-						
-				
 					</View>
-			
 			}
-			
 			
 			<TouchableOpacity 
 				style={{...styles.addPrompt, borderColor: theme.primaryColor}}
@@ -92,7 +68,6 @@ const Tasks = (props: any) => {
 			</TouchableOpacity>
 
 			<EditPanel/>
-
 		</SafeAreaView>
 	)
 }

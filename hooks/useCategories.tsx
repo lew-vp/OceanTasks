@@ -1,27 +1,14 @@
-// REACT NATIVE
-import { View, Text, StyleSheet, TouchableOpacity, LayoutAnimation } from 'react-native'
-import React, { PropsWithChildren, ReactComponentElement, useState } from 'react'
-import { Dimensions } from 'react-native'
-
-// REDUX 
-import { ITask } from '../Redux/Slices/taskSlice'
+//REACT 
+import React from 'react'
 
 // EXTERNAL LIBRARIES
-import { Box, ChevronDown, ChevronRight, Circle, Clock, DollarSign, Edit, Maximize, Minus, ShoppingBag, Square, X } from 'react-native-feather'
-import { current } from '@reduxjs/toolkit'
-import { useSelector } from 'react-redux'
-import { RootState } from '../Redux/store'
-
-
-interface IUseCategories {
-    category: string,
-    color: string
-}
+import { Clock, DollarSign, Minus, ShoppingBag } from 'react-native-feather'
 
 interface categoryMap {
     [key: string]: any
 }
 
+// A Custom hook that allows for retrieval of task category icon component
 const useCategories = () => {
 
     const getIcons: (color?: string) => categoryMap = (color?: string) => {
@@ -44,9 +31,7 @@ const useCategories = () => {
         }
     }
 
-
     return { getCategoryNames, getCategoryIcon}
 }
-
 
 export default useCategories

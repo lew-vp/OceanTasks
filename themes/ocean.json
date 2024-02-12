@@ -1,9 +1,9 @@
 {
-    "primaryColor": "rgba(33, 77, 101, 0.8)",
+    "primaryColor": "#456a7d",
     "opaquePrimaryBorder": "rgba(33, 77, 101, 0.2)",
     "primaryBorder": "rgba(129, 129, 129, 0.25)",
-    "primarySelected": "rgba(127, 189, 196, 0.7)",
-    "primarySelectedBorder": "rgba(127, 189, 196, 0.2)",
-    "deleteRed": "rgba(176, 25, 25, 0.85)",
-    "confirmGreen": "rgba(37, 156, 35, 0.85)"
+    "primarySelected": "#95c1c4",
+    "primarySelectedBorder": "rgba(127, 189, 196, 0.15)",
+    "deleteRed": "#b53534",
+    "confirmGreen": "#3fa43e"
 }

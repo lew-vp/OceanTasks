@@ -5,9 +5,10 @@ import type { RootState } from '../store'
 
 // EXTERNAL LIBRARIES
 import 'react-native-get-random-values';
-import { v4 as uuidV4 } from 'uuid'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+
+// TOOLS
 import { makeBlankTask } from '../../util/taskFunctions';
+import { setAsyncTasks } from '../../util/storageFunctions';
 
 export interface ITask {
     id: string,
@@ -15,7 +16,6 @@ export interface ITask {
     reminderTime: number | null,
     isCompleted: boolean,
     description: string,
-    reminded: boolean,
     category: any
 }
 
@@ -27,18 +27,13 @@ interface ITaskUpdates {
 // Define the initial state using that type
 const initialState: ITask[] = []
 
-
-
 export const taskSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
 
     setTasks: (state, tasks: PayloadAction<ITask[]>) => {
-        if (tasks){
-            // setAsyncTasks([...tasks.payload])
-            return [...tasks.payload]
-        } 
+        return tasks.payload
     },
 
     // Take an ITask and add it to State
@@ -48,19 +43,14 @@ export const taskSlice = createSlice({
 
     removeTask: (state, taskID: PayloadAction<string>) => {
         if (taskID.payload) {
-            console.log('passedTaskID: ' + taskID.payload)
-            console.log(state)
-            console.log('-----------------')
             let deleteIndex = state.findIndex((task: ITask) => task.id === taskID.payload)
-            console.log('deleteindex: ' + deleteIndex)
-            //broken atm
             state = state.splice(deleteIndex, 1)
         }
     },
 
+    // Searches for and modifies the provided task
     editTask: (state, taskUpdates: PayloadAction<ITaskUpdates>) => {
         if (taskUpdates.payload.id && taskUpdates.payload.updates) {
-
             let foundTask = state.findIndex((task: ITask) => task.id === taskUpdates.payload.id)
             if (foundTask !== null) {
                 state[foundTask] = {...state[foundTask], ...taskUpdates.payload.updates}

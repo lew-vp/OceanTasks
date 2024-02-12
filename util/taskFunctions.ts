@@ -8,7 +8,6 @@ export const makeBlankTask = () => {
         isCompleted: false,
         reminderTime: 0,
         description: '',
-        reminded: false,
         reference: null,
         category: 'None'
     })

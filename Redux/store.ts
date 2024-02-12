@@ -3,7 +3,6 @@ import taskReducer from './Slices/taskSlice'
 import themeReducer from './Slices/themeSlice'
 import selectedTaskReducer from './Slices/selectedTaskSlice'
 
-
 const store = configureStore({
   reducer: {
     tasks: taskReducer, 

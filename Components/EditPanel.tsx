@@ -1,25 +1,23 @@
 // REACT NATIVE
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Pressable, Dimensions, Keyboard } from 'react-native'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Pressable, Keyboard } from 'react-native'
+import React, { useMemo, useState } from 'react'
 
 //REDUX
 import { useDispatch, useSelector } from 'react-redux';
-import { ITask, editTask, selectTaskByID } from '../Redux/Slices/taskSlice'
+import { ITask, editTask } from '../Redux/Slices/taskSlice'
 import { RootState } from '../Redux/store';
 import { setSelectedTask } from '../Redux/Slices/selectedTaskSlice';
-import { current } from '@reduxjs/toolkit';
-
 
 // EXTERNAL LIBRARIES
 import { X } from 'react-native-feather'
-import Checkbox from 'expo-checkbox';
-import { UtilContext } from '../contexts/UtilContext';
 import dayjs from 'dayjs';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import useCategories from '../hooks/useCategories';
 import Modal from "react-native-modal";
-import { isSharedValue } from 'react-native-reanimated';
+
+// HOOKS
+import useCategories from '../hooks/useCategories';
+
 
 const EditPanel = () => {
 
@@ -30,7 +28,6 @@ const EditPanel = () => {
 
     const [taskModifications, setTaskModifications] = useState<Partial<ITask>>({})
     const [selectCategoryOpen, setSelectCategoryOpen] = useState<any>(false)
-    const utilFunctions = useContext(UtilContext)
     const [datePickerOpen, setDatePickerOpen] = useState<any>(false)
 
     const { getCategoryNames, getCategoryIcon } = useCategories()
@@ -43,35 +40,8 @@ const EditPanel = () => {
     }, [tasks, selectedTask])
 
     const updateTaskValue = (key: string, value: string | number | boolean) => {
-        console.log(value)
         if (key && (value || value === '')) {
-            console.log('setting mod')
-            console.log(key)
-            console.log(value)
-            console.log('----------------')
             setTaskModifications({...taskModifications, [key]: value})
-        }
-    }
-
-    useEffect(() => {
-        console.log('new task mods')
-        console.log(taskModifications)
-    }, [taskModifications])
-
-    const toggleTaskCompletion = () => {
-        if (taskDetails) {
-
-            let taskReference = utilFunctions.getTaskReference(taskDetails.id)
-            if (taskReference) {
-                dispatch(setSelectedTask(null))
-                taskReference.openRight()
-                setTimeout(() => {
-                    dispatch(editTask({id: taskDetails.id, updates: {isCompleted: !taskDetails.isCompleted}}))
-                }, 350)
-            } else {
-                dispatch(editTask({id: taskDetails.id, updates: {isCompleted: !taskDetails.isCompleted}}))
-                    dispatch(setSelectedTask(null))
-            }
         }
     }
 
@@ -142,6 +112,8 @@ const EditPanel = () => {
                                 <Text>{taskModifications.reminderTime ? dayjs.unix(taskModifications.reminderTime).format('DD/MM/YYYY hh:mm') : '- Select -'}</Text>
                             </Pressable>
                             <DateTimePickerModal
+                                accentColor={theme.primaryColor}
+                            buttonTextColorIOS={theme.primaryColor}
                                 isVisible={datePickerOpen}
                                 mode="datetime"
                                 onConfirm={(newTime) => {
@@ -190,12 +162,8 @@ const EditPanel = () => {
                     </View>
                 </View>
         </Modal>
-
-        
-
     )
 }
-
 
 
 const styles = StyleSheet.create({
@@ -203,16 +171,13 @@ const styles = StyleSheet.create({
         flex: 1,
         borderWidth: 0,
         borderColor: 'red',
-
-        
     },
+
     interfaceWindow: {
         height: 380, 
         padding: 20,
         paddingBottom: 30,
-
         gap: 10,
-
 
         borderTopRightRadius: 20,
         borderTopLeftRadius: 20,
@@ -223,7 +188,6 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 1, height: 1},
         shadowColor: '#424242',
         shadowOpacity: 0.15,
-
 
         zIndex: 100
     },
@@ -266,28 +230,5 @@ const styles = StyleSheet.create({
     }
     
 })
-
-const pickerSelectStyles = StyleSheet.create({
-    inputIOS: {
-      fontSize: 16,
-      paddingVertical: 12,
-      paddingHorizontal: 10,
-      borderWidth: 1,
-      borderColor: 'gray',
-      borderRadius: 4,
-      color: 'black',
-      paddingRight: 30, // to ensure the text is never behind the icon
-    },
-    inputAndroid: {
-      fontSize: 16,
-      paddingHorizontal: 10,
-      paddingVertical: 8,
-      borderWidth: 0.5,
-      borderColor: 'purple',
-      borderRadius: 8,
-      color: 'black',
-      paddingRight: 30, // to ensure the text is never behind the icon
-    },
-  });
 
 export default EditPanel

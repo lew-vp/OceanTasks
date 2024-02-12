@@ -1,24 +1,22 @@
 // REACT NATIVE
 import { View, Text, StyleSheet, TouchableOpacity, LayoutAnimation } from 'react-native'
-import React, { PropsWithChildren, useState } from 'react'
-import { Dimensions } from 'react-native'
+import React, { useState } from 'react'
 
 // REDUX 
 import { ITask } from '../Redux/Slices/taskSlice'
+import { RootState } from '../Redux/store'
+import { useSelector } from 'react-redux'
 
 // EXTERNAL LIBRARIES
 import { ChevronDown, ChevronRight, X } from 'react-native-feather'
-import TaskCard from './TaskCard'
-import { current } from '@reduxjs/toolkit'
-import { useSelector } from 'react-redux'
-import { RootState } from '../Redux/store'
 
+// COMPONENTS
+import TaskCard from './TaskCard'
 
 interface ITaskGroup {
     title: string,
     tasks: ITask[],
 }
-
 
 const TaskGroup = ({title, tasks}: ITaskGroup) => {
 
@@ -26,6 +24,7 @@ const TaskGroup = ({title, tasks}: ITaskGroup) => {
     const theme = useSelector((state: RootState) => state.theme)
 
     const toggleDrawer = () => {
+        // Handles the animation for the accordion
         setTrayOpen(current => !current)
         LayoutAnimation.configureNext({...LayoutAnimation.Presets.easeInEaseOut, duration: 200})
     }
@@ -47,7 +46,6 @@ const TaskGroup = ({title, tasks}: ITaskGroup) => {
                         key={task.id}
                         index={index}
                         taskDetails={task}
-                        onDelete={() => { }}
                     />
                 ))}
             </View>

@@ -1,32 +1,34 @@
-import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native'
-import React, { Ref, useEffect, useRef, useImperativeHandle, useContext, useState } from 'react'
+// REACT NATIVE
+import { View, Text, StyleSheet, Pressable } from 'react-native'
+import React, { useRef, useState } from 'react'
+
+//REDUX 
 import { ITask, editTask, removeTask } from '../Redux/Slices/taskSlice'
-import { Check, Trash, X } from 'react-native-feather'
-import Checkbox from 'expo-checkbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../Redux/store';
 import { setSelectedTask } from '../Redux/Slices/selectedTaskSlice';
+
+//EXTERNAL LIBRARIES
+import { Check, Trash, X } from 'react-native-feather'
+import Checkbox from 'expo-checkbox';
 import { Swipeable } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
-import { UtilContext } from '../contexts/UtilContext';
+
+//HOOKS
 import useCategories from '../hooks/useCategories';
 
 interface ITaskCard {
 	taskDetails: ITask,
 	index: number,
-	onDelete: (taskID: string) => void,
 }
 
-
-const TaskCard = ({taskDetails, onDelete}: ITaskCard) => {
+const TaskCard = ({taskDetails}: ITaskCard) => {
 
 	const dispatch = useDispatch()
-	const utilFunctions = useContext(UtilContext)
+	const { getCategoryIcon } = useCategories()
 
 	const selectedTask = useSelector((state: RootState) => state.selectedTask.value)
 	const theme = useSelector((state: RootState) => state.theme)
-
-	const {getCategoryIcon} = useCategories()
 
 	const [isSwiping, setIsSwiping] = useState<string | null>(null)
 
@@ -67,9 +69,9 @@ const TaskCard = ({taskDetails, onDelete}: ITaskCard) => {
 		
 		if (isSwiping) {
 			if (isSwiping === 'right') {
-				backgroundColor = 'rgba(176, 25, 25, 0.85)'	
+				backgroundColor = theme.deleteRed	
 			} else if (!taskDetails.isCompleted) {
-				backgroundColor = 'rgba(37, 156, 35, 0.85)'
+				backgroundColor = theme.confirmGreen
 			}
 		}
 		return backgroundColor
@@ -121,12 +123,12 @@ const TaskCard = ({taskDetails, onDelete}: ITaskCard) => {
 						/>
 					</Pressable>
 					<Pressable 
-						style={styles.grouper}
+						style={{...styles.grouper}}
 						onPress={() => {
 							dispatch(setSelectedTask(taskDetails.id))}
 						}
 					>
-						<Text style={styles.text}>{taskDetails.name}</Text>
+						<Text style={{...styles.text}}>{taskDetails.name}</Text>
 						{getCategoryIcon(taskDetails.category, '#eeeeee')}
 					</Pressable>
 				</View>
@@ -150,7 +152,6 @@ const TaskCard = ({taskDetails, onDelete}: ITaskCard) => {
 				} else {
 					toggleTaskCompletion()
 				}
-				console.log('swipeee')
 			}}
 			onSwipeableClose={() => setIsSwiping(null)}
 			overshootRight={true}
@@ -160,8 +161,6 @@ const TaskCard = ({taskDetails, onDelete}: ITaskCard) => {
 		
 	)
 }
-
-
 
 const styles = StyleSheet.create({
 	taskCard: {
@@ -201,7 +200,7 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		color: 'white',
-		fontSize: 17
+		fontSize: 17,
 	}
 })
 
