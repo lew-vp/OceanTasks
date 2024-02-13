@@ -6,6 +6,8 @@ A simple mobile application for managing your tasks. Create and manage your task
 
 ### Installing Android
 
+* Navigate to the link below on your android device:
+
 * https://expo.dev/artifacts/eas/jw79nYWtfFnRRx9hc9SfFh.apk
   
 * If your device warns you against installing the app, please select "Allow". It's safe :))
