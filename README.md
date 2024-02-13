@@ -6,10 +6,17 @@ A simple mobile application for managing your tasks. Create and manage your task
 
 ### Installing Android
 
-* Download the latest build from the following link:
 * https://expo.dev/artifacts/eas/jw79nYWtfFnRRx9hc9SfFh.apk
   
 * If your device warns you against installing the app, please select "Allow". It's safe :))
+
+### Installing iOS
+
+* Please send an E-Mail to lewis.v.potter@protonmail.com requesting access along with the
+  E-Mail address attached to your iCloud account.
+  
+* Follow the invitation E-Mail to install TestFlight and gain access to the app.
+
 
 ## Using Ocean Tasks
 
